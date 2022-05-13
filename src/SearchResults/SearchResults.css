@@ -1,0 +1,31 @@
+.search-results-page {
+    height:650px;
+    width:100%;
+    padding: 40px 40px;
+}
+.search-results-page h2 {
+    font-weight: bold;
+    font-family: "Source Code Pro";
+    font-size: x-large;
+}
+.img-responsive {
+    width: 300px;
+    height: 300px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+.record-tab {
+    border: 1px solid lightgray;
+    font-weight: normal;
+    font-family: "Source Code Pro";
+    font-size: large;
+    color: black;
+}
+.name-audio {
+    margin: 20px;
+    background: linear-gradient(to right, whitesmoke , lightcyan);
+    height: 100px;
+    border-radius: 5px;
+    font-family: "Source Code Pro";
+
+}

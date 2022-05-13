@@ -1,0 +1,34 @@
+.login-modal {
+    background: white;
+    height: 650px;
+    width: 100%;
+}
+.login-heading {
+    padding-top: 50px;
+    font-family: "Source Code Pro";
+    color: black;
+    font-size: xx-large;
+}
+.form-data-login {
+    width: 80%;
+    margin:auto;
+
+}
+.form-data-login input {
+    margin-left: 375px;
+    width: 400px;
+    border: 1px solid black;
+    font-family: "Source Code Pro";
+}
+.form-data-login button {
+    font-family: "Source Code Pro";
+    margin-top: 50px;
+    background: darkred;
+    color: white;
+    font-style: italic;
+    font-weight: bold;
+    margin-left: 450px;
+    width: 200px;
+    border: 1px solid black;
+    border-radius: 5px  ;
+}

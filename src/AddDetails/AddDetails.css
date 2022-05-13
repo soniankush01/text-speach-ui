@@ -1,0 +1,56 @@
+.add-details-content {
+    width: 100%;
+    background: white;
+    height: auto;
+    padding: 40px 40px;
+    font-family: "Source Code Pro";
+}
+.add-details-form {
+    max-width: 1200px;
+    margin: auto;
+    width: 80%;
+    border-bottom: 1px solid #e7e7e8;
+    padding: 30px 0 20px;
+}
+.form-control {
+    margin-top: 20px;
+    align-content: center;
+}
+.form-group {
+    margin: auto;
+}
+.form-data {
+    margin-bottom: 20px;
+}
+.record-actions {
+    max-width: 1000px;
+    margin: auto;
+    padding: 10px 10px;
+    width: 50%;
+    height: 180px;
+    border-top: 1px solid #e7e7e8;
+    border-bottom: 1px solid #e7e7e8;
+    background: white;
+    border-radius: 5px;
+}
+.record-actions h5 {
+    font-family: "Source Code Pro";
+}
+.action-button {
+    margin-right: 20px;
+    font-family: "Source Code Pro";
+    font-style: italic;
+    width: 100px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+.submit-button {
+    background: darkred;
+    color: white;
+    font-weight: bold;
+    font-family: "Source Code Pro";
+    font-style: italic;
+    width: 100px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
