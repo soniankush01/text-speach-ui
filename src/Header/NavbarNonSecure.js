@@ -23,6 +23,9 @@ const Navbar = () => {
                     </MobileIcon>
                     <NavMenu>
                         <NavItem>
+                            <NavLinks href="/"><div className="top-menu"><i className="fa fa-home" aria-hidden="true"></i></div></NavLinks>
+                        </NavItem>
+                        <NavItem>
                             <NavLinks href="/userLogin"><button className="ns-signin">Sign In</button></NavLinks>
                         </NavItem>
                     </NavMenu>

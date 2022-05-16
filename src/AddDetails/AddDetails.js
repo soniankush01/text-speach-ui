@@ -74,6 +74,10 @@ class AddDetails extends React.Component {
     };
 
     componentDidMount() {
+        let sessionId = getCookie("isAuth");
+        if (!sessionId) {
+            window.location = "/userLogin";
+        }
         navigator.getUserMedia({ audio: true },
             () => {
                 console.log('Permission Granted');

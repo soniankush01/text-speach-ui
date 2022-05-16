@@ -29,6 +29,10 @@ class EditProfile extends React.Component {
     };
 
     componentDidMount() {
+        let sessionId = getCookie("isAuth");
+        if (!sessionId) {
+            window.location = "/userLogin";
+        }
        this.loadEmployeeDetails();
     }
 

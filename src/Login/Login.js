@@ -10,7 +10,9 @@ class Login extends React.Component {
         super(props);
         this.state = {
             password:'',
-            userName:''
+            userName:'',
+            showUserNotExist:false,
+            showIncorrectPassword:false
         }
         this.handleChange = this.handleChange.bind(this);
     }
@@ -22,24 +24,49 @@ class Login extends React.Component {
 
     }
 
+    loginCheck = () => {
+        this.setState({showUserNotExist: false, showIncorrectPassword:false})
+        var validLogin=['111','222','333','444'];
+        if (!validLogin.includes(this.state.userName)) {
+            this.setState({showUserNotExist: true})
+            return false;
+        } else if(this.state.password != 'password') {
+            this.setState({showIncorrectPassword: true})
+            return false;
+        }
+        return true;
+    }
+
     loginUser = () => {
-        let url = java_app_url.concat('employee/').concat(this.state.userName);
-        axios.get(url, {
-            headers: {
-            }
-        }).then((response) => {
-             if (response.status == 200) {
-                 document.cookie = "isAuth=true"
-                 document.cookie = "empId=".concat(this.state.userName)
-                 window.location = "/";
-             }
-         }, (error) => {
-             console.log("failure");
-             console.log(error);
-         });
+        if (this.loginCheck()) {
+            let url = java_app_url.concat('employee/').concat(this.state.userName);
+            axios.get(url, {
+                headers: {}
+            }).then((response) => {
+                if (response.status == 200) {
+                    document.cookie = "isAuth=true"
+                    document.cookie = "empId=".concat(this.state.userName)
+                    window.location = "/";
+                }
+            }, (error) => {
+                console.log("failure");
+                console.log(error);
+            });
+        }
     }
 
     render() {
+
+        const displayErrorMsg = () => {
+            var errorMessage;
+            if (this.state.showUserNotExist) {
+                errorMessage = "User Not found in our Records.Please enter a valid User Name";
+            } else if (this.state.showIncorrectPassword) {
+                errorMessage = "Please Enter Correct password for User id-".concat(this.state.userName)
+            }
+            return errorMessage;
+        }
+
         return (
             <div className="login-modal">
                 <div className="login-heading">
@@ -61,6 +88,13 @@ class Login extends React.Component {
                     <div className="row">
                         <div className="col-6">
                             <button onClick={this.loginUser}> Login</button>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-12">
+                            <div className="incorrect-text">
+                            {displayErrorMsg()}
+                            </div>
                         </div>
                     </div>
                 </div>
