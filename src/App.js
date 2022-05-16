@@ -10,6 +10,7 @@ import AddDetails from "./AddDetails/AddDetails";
 import SearchResults from "./SearchResults/SearchResults";
 import Login from "./Login/Login";
 import EditProfile from "./Editprofile/EditProfile"
+import UserNF from "./UserNF/UserNF";
 import {getCookie} from "./Config/getCookie";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -37,6 +38,7 @@ class App extends React.Component {
                         <Route exact path="/employeeDetails" element={<SearchResults />}/>
                         <Route exact path="/userLogin" element={<Login />}/>
                         <Route exact path="/editProfile" element={<EditProfile />}/>
+                        <Route exact path="/userNotFound" element={<UserNF   />}/>
                     </Routes>
                 </BrowserRouter>
                 <Footer />

@@ -5,6 +5,8 @@ import { faCoffee } from '@fortawesome/free-solid-svg-icons'
 
 import img1 from "../recorder-ready-balloons.svg"
 import {getCookie} from "../Config/getCookie";
+import axios from "axios";
+import {java_app_url} from "../Config/Url";
 
 class Home extends React.Component {
 
@@ -18,7 +20,17 @@ class Home extends React.Component {
 
     searchRecord () {
         localStorage.setItem("serchTerm", this.state.searchTerm);
-        window.location.href = '/employeeDetails'
+        axios({
+            url: java_app_url.concat('user/getRecord/').concat(this.state.searchTerm),
+            responseType: 'blob',
+        }).then((response) => {
+            if (response.status==204) {
+                window.location = "/userNotFound";
+            } else {
+                window.location.href = '/employeeDetails'
+            }
+        });
+
     }
 
     handleChange(e) {

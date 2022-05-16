@@ -22,8 +22,7 @@ class SearchResults extends React.Component {
             employeeId: "",
             phonetics: "",
             voiceAvaliable: false,
-            country:'',
-            userNotFound:false
+            country:''
         }
     }
 
@@ -33,16 +32,12 @@ class SearchResults extends React.Component {
             url: java_app_url.concat('user/getRecord/').concat(searchterm),
             responseType: 'blob',
         }).then((response) => {
-            if (response.status==204) {
-                this.setState({userNotFound : true})
-            } else {
                 if (response.data.size != 0) {
                     this.setState({voiceAvaliable: true})
                     const blobResponseURL = URL.createObjectURL(response.data)
                     this.setState({blobURL: blobResponseURL, audioFile: response.data})
                 }
                 this.getEmployeeData(response.headers.empid)
-            }
         });
     }
 
