@@ -25,6 +25,7 @@ class Login extends React.Component {
     }
 
     loginCheck = () => {
+        console.log("New Login")
         this.setState({showUserNotExist: false, showIncorrectPassword:false})
         var validLogin=['111','222','333','444'];
         if (!validLogin.includes(this.state.userName)) {
