@@ -237,20 +237,20 @@ class AddDetails extends React.Component {
                     <form className="form-data">
                         <div className="row mb">
                             <label htmlFor="inputEmail3" className="col-sm-2 col-form-label">
-                                <div className="add-form-label"> First Name</div></label>
+                                <div className="add-form-label">Legal First Name</div></label>
                             <div className="col-sm-6">
                                 <input type="text" name="firstName" className="form-control" id="inputEmail4"
-                                       placeholder="First Name" onChange={this.handleChange}
+                                       placeholder="Legal First Name" onChange={this.handleChange}
                                        value={this.state.firstName}/>
                             </div>
                         </div>
                         <div className="form-row">
                             <div className="row mb">
                                 <label htmlFor="inputEmail3" className="col-sm-2 col-form-label">
-                                    <div className="add-form-label"> Last Name</div></label>
+                                    <div className="add-form-label">Legal Last Name</div></label>
                                 <div className="col-sm-6">
                                 <input type="text" name="lastName" className="form-control" id="inputEmail4"
-                                       placeholder="Last Name" onChange={this.handleChange}
+                                       placeholder="Legal Last Name" onChange={this.handleChange}
                                        value={this.state.lastName}/>
                                 </div>
                             </div>

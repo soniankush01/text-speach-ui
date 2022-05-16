@@ -51,23 +51,23 @@ class SearchResults extends React.Component {
                 prefferedName: response.data.preferredName, uid: response.data.uid, email: response.data.email,
                 employeeId: response.data.employeeId, country: response.data.country
             })
-            this.getTranscript()
+            this.getTranscript(response.data.uid, response.data.country)
         }, (error) => {
             console.log("failure");
             console.log(error);
         });
         }
 
-    getTranscript = () => {
+    getTranscript = (uid, country) => {
         const dataObject = JSON.stringify(
             {
                 "firstName": this.state.firstName,
                 "lastName": this.state.lastName,
                 "preferredName" : this.state.preferredName,
                 "email": this.state.emailId,
-                "uid": this.state.uid,
+                "uid": uid,
                 "employeeId" : this.state.employeeId,
-                "country":this.state.country
+                "country":country
             }
         )
         const url = apigee_url.concat('name-pronunciation/s2t');

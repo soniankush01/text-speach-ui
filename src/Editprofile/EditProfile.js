@@ -98,9 +98,9 @@ class EditProfile extends React.Component {
                                     <h4 class="text-right profile-edit-heading">Update Profile</h4>
                                 </div>
                                 <div class="row mt-2">
-                                    <div class="col-md-6"><label class="labels">First Name</label>
+                                    <div class="col-md-6"><label class="labels">Legal First Name</label>
                                         <input type="text" class="form-control" name="firstName" disabled onChange={this.handleChange} placeholder="first name"  value={this.state.firstName}/></div>
-                                    <div class="col-md-6"><label class="labels">Last Name</label>
+                                    <div class="col-md-6"><label class="labels">Legal Last Name</label>
                                         <input type="text" class="form-control" name="lastName" disabled onChange={this.handleChange} value={this.state.lastName} placeholder="Last Name"/>
                                     </div>
                                 </div>
