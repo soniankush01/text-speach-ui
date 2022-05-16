@@ -1,0 +1,33 @@
+.sucess-modal {
+    width: 300px;
+    height: 100px;
+    margin: auto;
+    background: whitesmoke;
+    position: center;
+    backface-visibility: inherit;
+    display: flex;
+    border: 2px solid black;
+    border-radius: 10px;
+    font-family: "Source Code Pro";
+    font-size: large;
+    padding: 0px 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+.sucess-message-text {
+    font-family: "Source Code Pro";
+    font-size: large;
+    font-style: italic;
+    padding: 20px 20px;
+    color: black;
+    font-weight: bold;
+    color: darkgreen;
+}
+.sucess-close-button {
+    font-family: "Source Code Pro";
+    font-size: large;
+    font-style: italic;
+    border-radius: 10px;
+    background: darkred;
+    color: white;
+}

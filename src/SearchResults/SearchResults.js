@@ -2,7 +2,8 @@ import React from 'react';
 import axios, {post} from 'axios';
 import './SearchResults.css'
 import MicRecorder from 'mic-recorder-to-mp3';
-import ankush from '../ankush.jpg'
+import {java_app_url} from "../Config/Url";
+import {apigee_url} from "../Config/Url";
 
 const Mp3Recorder = new MicRecorder({bitRate: 128});
 
@@ -13,33 +14,116 @@ class SearchResults extends React.Component {
         this.state = {
             blobURL: '',
             audioFile: null,
-            firstName: "Ankush",
-            lastName: "Soni",
-            prefferedName: "Ahaan",
-            uid: "u793188",
-            email: "ankush.soni@wellsfargo.com",
-            employeeId: "1946731",
-            phonetics: "Ae4j"
+            firstName: "",
+            lastName: "",
+            prefferedName: "",
+            uid: "",
+            email: "",
+            employeeId: "",
+            phonetics: "",
+            voiceAvaliable: false,
+            country:''
         }
     }
 
     componentDidMount() {
+        var searchterm = localStorage.getItem("serchTerm");
         axios({
-            url: 'http://localhost:8080/getAudio',
+            url: java_app_url.concat('user/getRecord/').concat(searchterm),
             responseType: 'blob',
         }).then((response) => {
-            const blobResponseURL = URL.createObjectURL(response.data)
-            this.setState({blobURL: blobResponseURL})
+            if (response.data.size != 0) {
+                this.setState({voiceAvaliable: true})
+                const blobResponseURL = URL.createObjectURL(response.data)
+                this.setState({blobURL: blobResponseURL, audioFile: response.data})
+            }
+            this.getEmployeeData(response.headers.empid)
         });
+    }
 
+    getEmployeeData = (empId) => {
+        let url = java_app_url.concat('employee/').concat(empId);
+        axios.get(url, {
+            headers: {
+            }
+        }).then((response) => {
+            this.setState({firstName: response.data.firstName, lastName: response.data.lastName,
+                prefferedName: response.data.preferredName, uid: response.data.uid, email: response.data.email,
+                employeeId: response.data.employeeId, country: response.data.country
+            })
+            this.getTranscript()
+        }, (error) => {
+            console.log("failure");
+            console.log(error);
+        });
+        }
+
+    getTranscript = () => {
+        const dataObject = JSON.stringify(
+            {
+                "firstName": this.state.firstName,
+                "lastName": this.state.lastName,
+                "preferredName" : this.state.preferredName,
+                "email": this.state.emailId,
+                "uid": this.state.uid,
+                "employeeId" : this.state.employeeId,
+                "country":this.state.country
+            }
+        )
+        const url = apigee_url.concat('name-pronunciation/s2t');
+        const formData = new FormData();
+        formData.append('audio',this.state.audioFile)
+        formData.append('request', dataObject)
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        }
+        const resp = post(url, formData,config)
+        resp.then((response) => {
+            this.setState({phonetics: response.data})
+        }, (error) => {
+            console.log("failure");
+            console.log(error);
+        });
+    }
+
+    backToHome = () => {
+        window.location = "/";
     }
 
     render() {
+        const renderVoicePrint = () => {
+            if (this.state.voiceAvaliable) {
+                return <div className="row">
+                    <div className="col-md-6">
+                        <div className="name-audio">
+                            <h2>Name phonetics:</h2>
+                            {this.state.phonetics}
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        <div className="name-audio">
+                            <h2>Name Audio:</h2>
+                            <audio src={this.state.blobURL} controls="controls"/>
+                        </div>
+                    </div>
+                </div>
+            } else {
+                return <div className="row">
+                    <div className="col-md-12">
+                        <div className="opt-out-message">
+                            Name Audio not avaliable!!! User has opted out for Voice Print.
+                        </div>
+                    </div>
+                </div>
+            }
+        }
         return (
             <div className="search-results-page">
                 <div className="row">
                     <div className="col-md-6">
-                        <img src={ankush} className="img-responsive"/>
+                        <img src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg   " className="img-responsive"/>
                     </div>
                     <div className="col-md-6">
                         <table className="table record-tab">
@@ -78,20 +162,8 @@ class SearchResults extends React.Component {
                         </table>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-md-6">
-                        <div className="name-audio">
-                            <h2>Name phonetics:</h2>
-                           {this.state.phonetics}
-                        </div>
-                    </div>
-                    <div className="col-md-6">
-                        <div className="name-audio">
-                            <h2>Name Audio:</h2>
-                            <audio src={this.state.blobURL} controls="controls"/>
-                        </div>
-                    </div>
-                </div>
+                {renderVoicePrint()}
+                <button className="back-toHome" onClick={this.backToHome}>Back To <i className="fa fa-home" aria-hidden="true"></i></button>
             </div>
         )
     }

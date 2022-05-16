@@ -10,24 +10,35 @@
     margin: auto;
     width: 80%;
     border-bottom: 1px solid #e7e7e8;
-    padding: 30px 0 20px;
+
 }
 .form-control {
     margin-top: 20px;
     align-content: center;
+    font-family: "Source Code Pro";
 }
 .form-group {
     margin: auto;
 }
 .form-data {
     margin-bottom: 20px;
+    margin-left: 200px;
+}
+.form-data select {
+    width: 425px;
+    margin-top: 25px;
+    height: 35px;
+    border: 1px solid darkgrey;
+    border-radius: 5px;
+    font-family: "Source Code Pro";
+    background: white;
 }
 .record-actions {
     max-width: 1000px;
     margin: auto;
     padding: 10px 10px;
     width: 50%;
-    height: 180px;
+    height: 205px;
     border-top: 1px solid #e7e7e8;
     border-bottom: 1px solid #e7e7e8;
     background: white;
@@ -52,5 +63,16 @@
     font-style: italic;
     width: 100px;
     border-radius: 5px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.default-Audio-text {
+    font-family: "Source Code Pro";
+    font-style: italic;
+    width: 600px;
+    font-size: medium;
+}
+.add-form-label {
+    font-family: "Source Code Pro";
     margin-top: 20px;
 }

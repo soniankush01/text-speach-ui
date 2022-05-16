@@ -1,5 +1,6 @@
 import React from 'react';
 import axios, { post } from 'axios';
+import {java_app_url} from "../Config/Url";
 
 import './Login.css'
 
@@ -22,22 +23,20 @@ class Login extends React.Component {
     }
 
     loginUser = () => {
-        axios({
-            method: 'post',
-            url: 'http://localhost:8080/login',
-            data: {
-                "username": this.state.userName,
-                "password": this.state.password
+        let url = java_app_url.concat('employee/').concat(this.state.userName);
+        axios.get(url, {
+            headers: {
             }
         }).then((response) => {
-            if (response.status == 200) {
-                document.cookie = "isAuth=true"
-                window.location = "/";
-            }
-        }, (error) => {
-            console.log("failure");
-            console.log(error);
-        });
+             if (response.status == 200) {
+                 document.cookie = "isAuth=true"
+                 document.cookie = "empId=".concat(this.state.userName)
+                 window.location = "/";
+             }
+         }, (error) => {
+             console.log("failure");
+             console.log(error);
+         });
     }
 
     render() {
@@ -50,7 +49,7 @@ class Login extends React.Component {
                     <div className="row">
                         <div className="col-6">
                             <input type="text" name="userName" className="form-control" id="inputEmail4"
-                                   placeholder="Enter Username/Email" onChange={this.handleChange}/>
+                                   placeholder="Enter Employee Id" onChange={this.handleChange}/>
                         </div>
                     </div>
                     <div className="row">

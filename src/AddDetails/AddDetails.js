@@ -1,7 +1,11 @@
 import React from 'react';
 import axios, { post } from 'axios';
+import {getCookie} from "../Config/getCookie";
+import SucessModal from "../Modal/SucessModal/SucessModal";
 import './AddDetails.css'
 import MicRecorder from 'mic-recorder-to-mp3';
+import {java_app_url} from "../Config/Url";
+import {python_app_url} from "../Config/Url";
 
 const Mp3Recorder = new MicRecorder({ bitRate: 128 });
 
@@ -21,9 +25,12 @@ class AddDetails extends React.Component {
             preferredName:'',
             emailId:'',
             uid:'',
-            employeeId:''
+            employeeId:'',
+            showSucessModal:false,
+            country:''
         }
         this.handleChange = this.handleChange.bind(this);
+        this.handleChangeDropDown = this.handleChangeDropDown.bind(this);
 
     };
 
@@ -34,6 +41,13 @@ class AddDetails extends React.Component {
             [e.target.name]: e.target.value
         });
 
+    }
+
+    handleChangeDropDown(e) {
+        this.setState({
+            [e.target.name]: e.target.value
+        });
+        this.textGoogleApi(this.state.preferredName, this.state.uid, e.target.value)
     }
 
     start = () => {
@@ -70,7 +84,32 @@ class AddDetails extends React.Component {
                 this.setState({ isBlocked: true })
             },
         );
-        this.textGoogleApi();
+        this.loadEmployeeDetails();
+    }
+
+    loadEmployeeDetails = () => {
+        var empId = getCookie("empId");
+        let url = java_app_url.concat('employee/').concat(empId);
+        axios.get(url, {
+            headers: {
+            }
+        }).then((response) => {
+            var preferredName;
+            if (response.data.preferredName == "") {
+                preferredName = response.data.firstName;
+            } else {
+                preferredName = response.data.preferredName
+            }
+            this.setState({firstName: response.data.firstName, lastName: response.data.lastName,
+                preferredName: preferredName, uid: response.data.uid, email: response.data.email,
+                employeeId: response.data.employeeId, country: response.data.country
+            })
+            this.textGoogleApi(preferredName, response.data.uid, "English (India)");
+        }, (error) => {
+            console.log("failure");
+            console.log(error);
+        });
+
     }
 
     validateForm() {
@@ -135,34 +174,36 @@ class AddDetails extends React.Component {
         return formIsValid;
     }
 
-    textGoogleApi = () => {
+    textGoogleApi = (name, uid, country) => {
         axios({
             method: 'post',
-            url: 'https://name-pronunciation-jnlwkiahlq-uc.a.run.app/t2s',
+            url: python_app_url.concat('t2s_v1'),
             responseType: 'blob',
             data: {
-                "preferredName":"Ahaan Soni",
-                "uid":"u123456"
+                "preferredName":name,
+                "uid":uid,
+                "country": country
             }
         }).then((response) => {
             const blobResponseURL = URL.createObjectURL(response.data)
             this.setState({blobURL: blobResponseURL})
+            this.setState({audioFile: response.data})
         });
     }
 
     pushRecord = () => {
-        alert(this.state.firstName)
         const dataObject = JSON.stringify(
             {
                 "firstName": this.state.firstName,
                 "lastName": this.state.lastName,
                 "preferredName" : this.state.preferredName,
-                "email": this.state.emailId,
+                "email": this.state.email,
                 "uid": this.state.uid,
-                "employeeId" : this.state.employeeId
+                "employeeId" : this.state.employeeId,
+                "country": this.state.country
             }
         )
-        const url = 'http://localhost:8080/voice/upload';
+        const url = java_app_url.concat('user/uploadRecord');
         const formData = new FormData();
         formData.append('file',this.state.audioFile)
         formData.append('employeeData', dataObject)
@@ -171,62 +212,119 @@ class AddDetails extends React.Component {
                 'content-type': 'multipart/form-data'
             }
         }
-        return  post(url, formData,config)
+        const resp =  post(url, formData,config)
+        resp.then((response) => {
+            this.setState({showSucessModal: true})
+            this.setState({phonetics: response.data})
+        }, (error) => {
+            console.log("failure");
+            console.log(error);
+        });
     }
 
+    toggleModal = () => {
+        this.setState(prevState => ({
+            showSucessModal: !prevState.showSucessModal
+        }));
+    };
 
     render() {
+        const {showSucessModal} = this.state
         return (
             <div className="add-details-content">
                 <h3>Create Your Voice Print</h3>
                 <div className="add-details-form">
                     <form className="form-data">
-                        <div className="form-row">
-                            <div className="form-group col-md-6">
+                        <div className="row mb">
+                            <label htmlFor="inputEmail3" className="col-sm-2 col-form-label">
+                                <div className="add-form-label"> First Name</div></label>
+                            <div className="col-sm-6">
                                 <input type="text" name="firstName" className="form-control" id="inputEmail4"
-                                       placeholder="First Name" onChange={this.handleChange}/>
+                                       placeholder="First Name" onChange={this.handleChange}
+                                       value={this.state.firstName}/>
                             </div>
                         </div>
                         <div className="form-row">
-                            <div className="form-group col-md-6">
+                            <div className="row mb">
+                                <label htmlFor="inputEmail3" className="col-sm-2 col-form-label">
+                                    <div className="add-form-label"> Last Name</div></label>
+                                <div className="col-sm-6">
                                 <input type="text" name="lastName" className="form-control" id="inputEmail4"
-                                       placeholder="Last Name" onChange={this.handleChange}/>
+                                       placeholder="Last Name" onChange={this.handleChange}
+                                       value={this.state.lastName}/>
+                                </div>
                             </div>
                         </div>
                         <div className="form-row">
-                            <div className="form-group col-md-6">
+                            <div className="row mb">
+                            <label htmlFor="inputEmail3" className="col-sm-2 col-form-label">
+                                <div className="add-form-label">Preferred Name</div></label>
+                            <div className="col-sm-6">
                                 <input type="text" name="preferredName" className="form-control" id="inputEmail4"
-                                       placeholder="Preferred Name" onChange={this.handleChange}/>
+                                       placeholder="Preferred Name" onChange={this.handleChange}
+                                       value={this.state.preferredName}/>
+                            </div>
                             </div>
                         </div>
                         <div className="form-row">
-                            <div className="form-group col-md-6">
-                                <input type="text" name="emailId" className="form-control" id="inputEmail4"
-                                       placeholder="Email" onChange={this.handleChange}/>
+                            <div className="row mb">
+                                <label htmlFor="inputEmail3" className="col-sm-2 col-form-label">
+                                    <div className="add-form-label">Email</div></label>
+                            <div className="col-sm-6">
+                                <input type="text" name="email" className="form-control" id="inputEmail4"
+                                       placeholder="Email" disabled onChange={this.handleChange}
+                                       value={this.state.email}/>
+                            </div>
                             </div>
                         </div>
                         <div className="form-row">
-                            <div className="form-group col-md-6">
+                            <div className="row mb">
+                                <label htmlFor="inputEmail3" className="col-sm-2 col-form-label">
+                                    <div className="add-form-label">UId</div></label>
+                            <div className="col-sm-6">
                                 <input type="text" name="uid" className="form-control" id="inputEmail4"
-                                       placeholder="Uid" onChange={this.handleChange}/>
+                                       placeholder="Uid" disabled onChange={this.handleChange}
+                                       value={this.state.uid}/>
+                            </div>
                             </div>
                         </div>
                         <div className="form-row">
-                            <div className="form-group col-md-6">
+                            <div className="row mb">
+                                <label htmlFor="inputEmail3" className="col-sm-2 col-form-label">
+                                    <div className="add-form-label">Employee Id</div></label>
+                            <div className="col-sm-6">
                                 <input type="text" name="employeeId" className="form-control" id="inputEmail4"
-                                       placeholder="Employee Id" onChange={this.handleChange}/>
+                                       placeholder="Employee Id" disabled onChange={this.handleChange}
+                                       value={this.state.employeeId}/>
+                            </div>
                             </div>
                         </div>
                         <div className="form-row">
-                            <div className="form-group col-md-6">
-                                <input type="text" name="selectedCountry" className="form-control" id="inputEmail4"
-                                       placeholder="Country" onChange={this.handleChange}/>
+                            <div className="row mb">
+                                <label htmlFor="inputEmail3" className="col-sm-2 col-form-label">
+                                    <div className="add-form-label">Country</div></label>
+                            <div className="col-sm-6">
+                                <select name="country" value={this.state.country} onChange={this.handleChangeDropDown}>
+                                    <option value="English (India)">English (India)</option>
+                                    <option value="English (United States)">English (United States)</option>
+                                    <option value="Hindi (India)">Hindi (India)</option>
+                                    <option value="Bengali (India)">Bengali (India)</option>
+                                    <option value="Finnish (Finland)">Finnish (Finland)</option>
+                                </select>
+                            </div>
                             </div>
                         </div>
 
                     </form>
+                    {showSucessModal && <SucessModal onClose={this.toggleModal}
+                                                     msg="Record Upload Sucessfull"/>}
                     <div className="form-row">
                         <div className="record-actions">
+                            <audio src={this.state.blobURL} controls="controls" />
+                            <div className="default-Audio-text">
+                                By Default we load Standard name pronounciation of First Name/Preferred Name,
+                                If you wish to override default, please record your own audio and submit
+                            </div>
                             <h5>Record you name:</h5>
                             <button  className="action-button" onClick={this.start} disabled={this.state.isRecording}>
                                 Record
@@ -234,7 +332,6 @@ class AddDetails extends React.Component {
                             <button  className="action-button" onClick={this.stop} disabled={!this.state.isRecording}>
                                 Stop
                             </button>
-                            <audio src={this.state.blobURL} controls="controls" />
                         </div>
                     </div>
                     <div className="form-row">

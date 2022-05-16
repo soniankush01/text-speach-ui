@@ -29,3 +29,17 @@
     font-family: "Source Code Pro";
 
 }
+.opt-out-message {
+    font-family: "Source Code Pro";
+    margin-top: 50px;
+    background: whitesmoke;
+}
+.back-toHome {
+    font-family: "Source Code Pro";
+    margin-top: 50px;
+    background: darkred;
+    font-style: italic;
+    width: 200px;
+    color: white;
+    border-radius: 10px;
+}
